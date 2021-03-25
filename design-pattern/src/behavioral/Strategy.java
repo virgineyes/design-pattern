@@ -3,28 +3,16 @@ package behavioral;
 public class Strategy {
 	public static void main(String[] args) {
 		
-		//TODO
-		
-		// Conncter 
-		// get connect >> data 
-		
-		// Service
-		
-		// DAO/ repository
-		// data save
-		
 		// TODO Auto-generated method stub
-		Adventurer fireWarrio = TrainingCamp.createAdventurer("archer");
-		extracted(fireWarrio);
+		Adventurer fireWarrio = TrainingCamp.createAdventurer("warrior");
+		extracted(fireWarrio, new Strategy().new FireSkill());
 		
-//		Adventurer iceArcher = TrainingCamp.createAdventurer("archer");
-//		iceArcher.choiceStrategy(strategy.new IceSkill());
-//		iceArcher.attack();
-//		iceArcher.useSkill();
+		Adventurer iceArcher = TrainingCamp.createAdventurer("archer");
+		extracted(iceArcher, new Strategy().new IceSkill());
 	}
 
-	private static void extracted(Adventurer adventurer) {
-		adventurer.choiceStrategy(new Strategy().new BloodSkill());
+	private static void extracted(Adventurer adventurer, SkillStrategy skill) {
+		adventurer.choiceStrategy(skill);
 		adventurer.attack();
 		adventurer.useSkill();
 	}
