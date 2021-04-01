@@ -1,22 +1,42 @@
-package behavioral;
+package structural;
 
-public class Strategy {
+public class Proxy {
+
 	public static void main(String[] args) {
-		
 		// TODO Auto-generated method stub
-		Adventurer fireWarrio = TrainingCamp.createAdventurer("warrior");
-		extracted(fireWarrio, new Strategy().new FireSkill());
-		
-		Adventurer iceArcher = TrainingCamp.createAdventurer("archer");
-		extracted(iceArcher, new Strategy().new IceSkill());
+		WarriorUserProxy proxy = new Proxy().new WarriorUserProxy(new Proxy().new WarriorUser());
+		Adventurer warrior = proxy.createUser();
+		warrior.attack();
+		warrior.useSkill();
 	}
-
-	private static void extracted(Adventurer adventurer, SkillStrategy skill) {
-		adventurer.choiceStrategy(skill);
-		adventurer.attack();
-		adventurer.useSkill();
+	
+	public interface User {
+		Adventurer createUser();
 	}
+	
+	public class WarriorUser implements User {
+	    public Adventurer createUser() {
+			System.out.println("收到代理者的需求");
+	    	return TrainingCamp.createAdventurer("warrior");
+	    }
+	}
+	
+	public class WarriorUserProxy implements User {
+		private User user;
 
+		public WarriorUserProxy(User user) {
+			this.user = user;
+		}
+
+		public Adventurer createUser() {
+			System.out.println("代理者協助 Camp 建立戰士");
+			Adventurer warrior = user.createUser();
+			System.out.println("設定火傷害");
+			warrior.choiceStrategy(new Proxy().new FireSkill());
+			return warrior;
+		}
+	}
+	
 	public abstract class Adventurer {
 		SkillStrategy flightStrategy;
 	    public void choiceStrategy(SkillStrategy strategy){
@@ -28,7 +48,7 @@ public class Strategy {
 		};
 	}
 	
-	public class Warrior extends Adventurer  {
+	public class Warrior extends Adventurer {
 		@Override
 		public void attack() {
 			System.out.print("戰士揮刀");
@@ -48,6 +68,8 @@ public class Strategy {
 		public void attack() {
 			System.out.println("詛咒");
 		}
+		
+
 	}
 	
 	public interface SkillStrategy {
@@ -77,13 +99,13 @@ public class Strategy {
 	
 	public static class TrainingCamp {
 		public static Adventurer createAdventurer(String type) {
-			Strategy strategy = new Strategy();
+			Proxy proxy = new Proxy();
 			if ("warrior".equals(type)) {
-				return strategy.new Warrior();
+				return proxy.new Warrior();
 			} else if ("archer".equals(type)) {
-				return strategy.new Archer();
+				return proxy.new Archer();
 			} else if ("priest".equals(type)) {
-				return strategy.new Priest();
+				return proxy.new Priest();
 			}
 			return null;
 		}
